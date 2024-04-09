@@ -10,7 +10,7 @@ import (
 	"time"
 
 	"github.com/niubaoshu/goutils"
-	"github.com/raszia/gotiny"
+	"github.com/unitoftime/gotiny"
 )
 
 type str struct {

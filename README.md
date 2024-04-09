@@ -1,7 +1,9 @@
 
+# This is a fork of https://github.com/raszia/gotiny/tree/master
+
 # gotiny
 
-   [![Go Report Card](https://goreportcard.com/badge/github.com/raszia/gotiny)](https://goreportcard.com/report/github.com/raszia/gotiny) [![CodeCov](https://codecov.io/gh/raszia/gotiny/branch/master/graph/badge.svg)](https://codecov.io/gh/raszia/gotiny) [![GoDoc](https://godoc.org/github.com/raszia/gotiny?status.svg)](https://godoc.org/github.com/raszia/gotiny) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/raszia/gotiny/blob/master/LICENSE) ![build status](https://github.com/raszia/gotiny/actions/workflows/go.yml/badge.svg)
+   [![Go Report Card](https://goreportcard.com/badge/github.com/unitoftime/gotiny)](https://goreportcard.com/report/github.com/unitoftime/gotiny) [![CodeCov](https://codecov.io/gh/unitoftime/gotiny/branch/master/graph/badge.svg)](https://codecov.io/gh/unitoftime/gotiny) [![GoDoc](https://godoc.org/github.com/unitoftime/gotiny?status.svg)](https://godoc.org/github.com/unitoftime/gotiny) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/unitoftime/gotiny/blob/master/LICENSE) ![build status](https://github.com/unitoftime/gotiny/actions/workflows/go.yml/badge.svg)
 
 Gotiny is an efficient Go serialization library that utilizes pre-generated encoding engine and minimizes the usage of the reflect library. This approach results in improved efficiency, making gotiny almost as fast as serialization libraries that generate code.
 
@@ -16,7 +18,7 @@ import (
     "fmt"
     "reflect"
 
-    "github.com/raszia/gotiny"
+    "github.com/unitoftime/gotiny"
 )
 
 func main() {
@@ -142,7 +144,7 @@ func marshalUnmarshalEncryptExample() {
 ## install
 
 ```bash
-go get -u github.com/raszia/gotiny
+go get -u github.com/unitoftime/gotiny
 ```
 
 ## Encoding Protocol
@@ -193,7 +195,7 @@ go get -u github.com/raszia/gotiny
 
 ## benchmark
 
-[benchmark](https://github.com/raszia/go_serialization_benchmarks)
+[benchmark](https://github.com/unitoftime/go_serialization_benchmarks)
 
 ### License
 

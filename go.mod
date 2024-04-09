@@ -1,4 +1,4 @@
-module github.com/raszia/gotiny
+module github.com/unitoftime/gotiny
 
 go 1.19
 

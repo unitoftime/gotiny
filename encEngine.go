@@ -1,11 +1,34 @@
 package gotiny
 
 import (
+	"cmp"
+	"fmt"
 	"reflect"
+	"slices"
 	"sync"
 	"time"
 	"unsafe"
 )
+
+func reflectCompare(ra, rb reflect.Value) int {
+	if ra.CanInt() {
+		a := ra.Int()
+		b := rb.Int()
+		return cmp.Compare(a, b)
+	}
+	if ra.CanUint() {
+		a := ra.Uint()
+		b := rb.Uint()
+		return cmp.Compare(a, b)
+	}
+	if ra.CanFloat() {
+		a := ra.Float()
+		b := rb.Float()
+		return cmp.Compare(a, b)
+	}
+
+	panic(fmt.Sprintf("gotiny: reflectCompare: Unknown map key type, can't sort properly! %T, %T", ra.Interface(), rb.Interface()))
+}
 
 type encEng func(*Encoder, unsafe.Pointer) //编码器
 
@@ -139,6 +162,9 @@ func buildEncEngine(rt reflect.Type, engPtr *encEng) {
 				v := reflect.NewAt(rt, p).Elem()
 				e.encLength(v.Len())
 				keys := v.MapKeys()
+				slices.SortFunc(keys, func(a, b reflect.Value) int {
+					return reflectCompare(a, b)
+				})
 				for i := 0; i < len(keys); i++ {
 					val := v.MapIndex(keys[i])
 					kEng(e, getUnsafePointer(&keys[i]))

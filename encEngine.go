@@ -26,6 +26,11 @@ func reflectCompare(ra, rb reflect.Value) int {
 		b := rb.Float()
 		return cmp.Compare(a, b)
 	}
+	if ra.Kind() == reflect.String && rb.Kind() == reflect.String {
+		a := ra.String()
+		b := rb.String()
+		return cmp.Compare(a, b)
+	}
 
 	panic(fmt.Sprintf("gotiny: reflectCompare: Unknown map key type, can't sort properly! %T, %T", ra.Interface(), rb.Interface()))
 }

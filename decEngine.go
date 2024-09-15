@@ -1,6 +1,7 @@
 package gotiny
 
 import (
+	"fmt"
 	"reflect"
 	"sync"
 	"time"
@@ -227,11 +228,11 @@ func buildDecEngine(rt reflect.Type, engPtr *decEng) {
 	case reflect.Interface:
 		engine = func(d *Decoder, p unsafe.Pointer) {
 			if d.decIsNotNil() {
-				name := ""
-				decString(d, unsafe.Pointer(&name))
+				name := defaultNameType
+				decNameType(d, unsafe.Pointer(&name))
 				et, has := name2type[name]
 				if !has {
-					panic("unknown typ:" + name)
+					panic(fmt.Sprintf("unknown typ: %v", name))
 				}
 				v := reflect.NewAt(rt, p).Elem()
 				var ev reflect.Value

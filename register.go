@@ -1,13 +1,55 @@
 package gotiny
 
 import (
+	"fmt"
+	"hash/crc32"
 	"reflect"
 	"strconv"
+	"unsafe"
 )
 
+// //--------------------------------------------------------------------------------
+// // nameType: string
+// type nameType string
+// var defaultNameType = nameType("")
+// func newNameType(str string) nameType {
+// 	return nameType(str)
+// }
+// func decNameType(d *Decoder, p unsafe.Pointer) {
+// 	l, val := int(d.decUint32()), (*nameType)(p)
+// 	*val = nameType(d.buf[d.index : d.index+l])
+// 	d.index += l
+// }
+// func (e *Encoder) encNameType(nt nameType) {
+// 	s := string(nt)
+// 	e.encUint32(uint32(len(s))); e.buf = append(e.buf, s...)
+// }
+
+//--------------------------------------------------------------------------------
+// nameType: crc32
+var hashTable = crc32.MakeTable(crc32.IEEE)
+func crc(label string) uint32 {
+	return crc32.Checksum([]byte(label), hashTable)
+}
+
+type nameType uint32
+var defaultNameType = nameType(0)
+func newNameType(str string) nameType {
+	return nameType(crc(str))
+}
+func decNameType(d *Decoder, p unsafe.Pointer) {
+	*(*uint32)(p) = d.decUint32()
+}
+func (e *Encoder) encNameType(nt nameType) {
+	e.encUint32(uint32(nt))
+}
+
+
+//--------------------------------------------------------------------------------
+
 var (
-	type2name = map[reflect.Type]string{}
-	name2type = map[string]reflect.Type{}
+	type2name = map[reflect.Type]nameType{}
+	name2type = map[nameType]reflect.Type{}
 )
 
 func GetName(obj any) string {
@@ -105,11 +147,12 @@ func getName(prefix []byte, rt reflect.Type) []byte {
 	return prefix
 }
 
-func getNameOfType(rt reflect.Type) string {
+func getNameOfType(rt reflect.Type) nameType {
 	if name, has := type2name[rt]; has {
 		return name
 	}
-	return registerType(rt)
+	panic("gotiny: attempt to serialize unregistered type: " + GetNameByType(rt))
+	// return registerType(rt)
 }
 
 func Register(i any) string {
@@ -135,9 +178,14 @@ func RegisterName(name string, rt reflect.Type) {
 		panic("gotiny: registering duplicate types for " + GetNameByType(rt))
 	}
 
-	if _, has := name2type[name]; has {
-		panic("gotiny: registering name" + name + " is exist")
+	nt := newNameType(name)
+	if existingType, has := name2type[nt]; has {
+		oldNameType := type2name[existingType]
+		panic(fmt.Sprintf("gotiny: registered name collision: New: [%s (%s) (%d)] Old: [%s (%s) (%v)]",
+			name, rt.String(), nt,
+			"<Unknown>", existingType.String(), oldNameType,
+		))
 	}
-	name2type[name] = rt
-	type2name[rt] = name
+	name2type[nt] = rt
+	type2name[rt] = nt
 }

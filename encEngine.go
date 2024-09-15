@@ -201,7 +201,7 @@ func buildEncEngine(rt reflect.Type, engPtr *encEng) {
 						M()
 					})(p))
 					et := v.Type()
-					e.encString(getNameOfType(et))
+					e.encNameType(getNameOfType(et))
 					getEncEngine(et)(e, getUnsafePointer(&v))
 				}
 			}
@@ -212,7 +212,7 @@ func buildEncEngine(rt reflect.Type, engPtr *encEng) {
 				if isNotNil {
 					v := reflect.ValueOf(*(*interface{})(p))
 					et := v.Type()
-					e.encString(getNameOfType(et))
+					e.encNameType(getNameOfType(et))
 					getEncEngine(et)(e, getUnsafePointer(&v))
 				}
 			}

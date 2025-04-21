@@ -232,7 +232,8 @@ func buildDecEngine(rt reflect.Type, engPtr *decEng) {
 				decNameType(d, unsafe.Pointer(&name))
 				et, has := name2type[name]
 				if !has {
-					panic(fmt.Sprintf("unknown typ: %v", name))
+					panic(fmt.Sprintf("gotiny: unknown type: [%s (%s)]", name, rt.String()))
+					// panic(fmt.Sprintf("unknown typ: %v", name))
 				}
 				v := reflect.NewAt(rt, p).Elem()
 				var ev reflect.Value

@@ -32,6 +32,16 @@ func reflectCompare(ra, rb reflect.Value) int {
 		return cmp.Compare(a, b)
 	}
 
+	if ra.Kind() == reflect.Struct && rb.Kind() == reflect.Struct && ra.Type() == rb.Type() {
+		for i := 0; i < ra.NumField(); i++ {
+			res := reflectCompare(ra.Field(i), rb.Field(i))
+			if res != 0 {
+				return res
+			}
+		}
+		return 0
+	}
+
 	panic(fmt.Sprintf("gotiny: reflectCompare: Unknown map key type, can't sort properly! %T, %T", ra.Interface(), rb.Interface()))
 }
 

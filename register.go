@@ -8,7 +8,7 @@ import (
 	"unsafe"
 )
 
-// //--------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------
 // // nameType: string
 // type nameType string
 // var defaultNameType = nameType("")
@@ -94,22 +94,9 @@ func getName(prefix []byte, rt reflect.Type) []byte {
 		case reflect.Map:
 			return getName(append(getName(append(prefix, "map["...), rt.Key()), ']'), rt.Elem())
 		case reflect.Interface:
-			prefix = append(prefix, "interface {"...)
-			nm := rt.NumMethod()
-			if nm > 0 {
-				prefix = append(prefix, ' ')
-			}
-			for i := 0; i < nm; i++ {
-				method := rt.Method(i)
-				fn := getName([]byte(nil), method.Type)
-				prefix = append(prefix, method.Name+string(fn[4:])...)
-				if i != nm-1 {
-					prefix = append(prefix, ';', ' ')
-				} else {
-					prefix = append(prefix, ' ')
-				}
-			}
-			return append(prefix, '}')
+			// Note: Don't walk the methods with rt.Method(i). Any reachable call to reflect.Type.Method
+			// forces the linker to keep every exported method of every type in the binary.
+			return append(prefix, rt.String()...)
 		case reflect.Func:
 			prefix = append(prefix, "func("...)
 			for i := 0; i < rt.NumIn(); i++ {
